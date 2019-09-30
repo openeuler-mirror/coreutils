@@ -1,0 +1,104 @@
+From 03fbb5ecec045d41b28c5ec9750ee94e4bea074d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?P=C3=A1draig=20Brady?= <P@draigBrady.com>
+Date: Sat, 2 Feb 2019 19:16:02 -0800
+Subject: [PATCH 57/87] seq: output decimal points consistently with invalid
+ locales
+
+* src/seq.c (print_numbers): Only reset the locale if it
+was successfully set originally.
+* tests/misc/seq-locale.sh: Add a new test.
+* tests/local.mk: Reference the new test.
+* NEWS: Mention the fix.
+---
+ src/seq.c                | 11 ++++++++---
+ tests/local.mk           |  1 +
+ tests/misc/seq-locale.sh | 28 ++++++++++++++++++++++++++++
+ 3 files changed, 37 insertions(+), 3 deletions(-)
+ create mode 100755 tests/misc/seq-locale.sh
+
+diff --git a/src/seq.c b/src/seq.c
+index 61d20fe62..b5913368a 100644
+--- a/src/seq.c
++++ b/src/seq.c
+@@ -42,6 +42,9 @@
+ 
+ #define AUTHORS proper_name ("Ulrich Drepper")
+ 
++/* True if the locale settings were honored.  */
++static bool locale_ok;
++
+ /* If true print all number with equal width.  */
+ static bool equal_width;
+ 
+@@ -324,9 +327,11 @@ print_numbers (char const *fmt, struct layout layout,
+               long double x_val;
+               char *x_str;
+               int x_strlen;
+-              setlocale (LC_NUMERIC, "C");
++              if (locale_ok)
++                setlocale (LC_NUMERIC, "C");
+               x_strlen = asprintf (&x_str, fmt, x);
+-              setlocale (LC_NUMERIC, "");
++              if (locale_ok)
++                setlocale (LC_NUMERIC, "");
+               if (x_strlen < 0)
+                 xalloc_die ();
+               x_str[x_strlen - layout.suffix_len] = '\0';
+@@ -559,7 +564,7 @@ main (int argc, char **argv)
+ 
+   initialize_main (&argc, &argv);
+   set_program_name (argv[0]);
+-  setlocale (LC_ALL, "");
++  locale_ok = !!setlocale (LC_ALL, "");
+   bindtextdomain (PACKAGE, LOCALEDIR);
+   textdomain (PACKAGE);
+ 
+diff --git a/tests/local.mk b/tests/local.mk
+index 290e30f62..4751886b2 100644
+--- a/tests/local.mk
++++ b/tests/local.mk
+@@ -244,6 +244,7 @@ all_tests =					\
+   tests/misc/seq.pl				\
+   tests/misc/seq-epipe.sh			\
+   tests/misc/seq-io-errors.sh			\
++  tests/misc/seq-locale.sh			\
+   tests/misc/seq-long-double.sh			\
+   tests/misc/seq-precision.sh			\
+   tests/misc/head.pl				\
+diff --git a/tests/misc/seq-locale.sh b/tests/misc/seq-locale.sh
+new file mode 100755
+index 000000000..8a46ab7e4
+--- /dev/null
++++ b/tests/misc/seq-locale.sh
+@@ -0,0 +1,28 @@
++#!/bin/sh
++# Test for output with appropriate precision
++
++# Copyright (C) 2019 Free Software Foundation, Inc.
++
++# This program is free software: you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation, either version 3 of the License, or
++# (at your option) any later version.
++
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++
++# You should have received a copy of the GNU General Public License
++# along with this program.  If not, see <https://www.gnu.org/licenses/>.
++
++. "${srcdir=.}/tests/init.sh"; path_prepend_ ./src
++print_ver_ seq
++
++# With coreutils-8.30 and earlier, the last decimal point would be ','
++# when setlocale(LC_ALL, "") failed, but setlocale(LC_NUMERIC, "") succeeded.
++LC_ALL= LANG=invalid LC_NUMERIC=$LOCALE_FR_UTF8 seq 0.1 0.2 0.7 > out || fail=1
++uniq -w2 out > out-merge || framework_failure_
++test "$(wc -l < out-merge)" = 1 || { fail=1; cat out; }
++
++Exit $fail
+-- 
+2.19.1
+

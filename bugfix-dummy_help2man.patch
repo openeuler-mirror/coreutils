@@ -1,0 +1,20 @@
+diff --git a/man/local.mk b/man/local.mk
+index 05d4401..601f459 100644
+--- a/man/local.mk
++++ b/man/local.mk
+@@ -23,11 +23,11 @@ if CROSS_COMPILING
+ run_help2man = $(SHELL) $(srcdir)/man/dummy-man
+ else
+ ## Graceful degradation for systems lacking perl.
+-if HAVE_PERL
+-run_help2man = $(PERL) -- $(srcdir)/man/help2man
+-else
++#if HAVE_PERL
++#run_help2man = $(PERL) -- $(srcdir)/man/help2man
++#else
+ run_help2man = $(SHELL) $(srcdir)/man/dummy-man
+-endif
++#endif
+ endif
+ 
+ man1_MANS = @man1_MANS@
