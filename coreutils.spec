@@ -1,11 +1,10 @@
 Name:       coreutils
 Version:    8.30
-Release:    5
+Release:    6
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
 Source0:    https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
-#Source 50 51 105 and 106 come from fedora
 Source50:   supported_utils
 Source51:   coreutils-provides.inc
 Source105:  coreutils-colorls.sh
@@ -14,7 +13,6 @@ Source106:  coreutils-colorls.csh
 # do not make coreutils-single depend on /usr/bin/coreutils
 %global __requires_exclude ^%{_bindir}/coreutils$
 
-#patch 1 - 950 from fedora
 Patch1:   coreutils-8.30-renameatu.patch
 Patch100: coreutils-8.26-test-lock.patch
 Patch105: coreutils-8.26-selinuxenable.patch
@@ -36,7 +34,6 @@ Patch808: coreutils-i18n-fold-newline.patch
 Patch908: coreutils-getgrouplist.patch
 Patch950: coreutils-selinux.patch
 
-#openEuler
 Patch6000: bugfix-remove-usr-local-lib-from-m4.patch
 Patch6001: bugfix-dummy_help2man.patch
 Patch6002: bugfix-selinux-flask.patch
@@ -145,6 +142,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Wed Nov 6 2019 shenyangyang <shenyangyang4@huawei.com> - 8.30-6
+- delete unneeded comments
+
 * Thu Aug 29 2019 hexiaowen <hexiaowen@huawei.com> - 8.30-5
 - Package rebuild
 
