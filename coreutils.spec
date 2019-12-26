@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    8.30
-Release:    7
+Release:    8
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -17,6 +17,7 @@ Patch1:   coreutils-8.30-renameatu.patch
 Patch100: coreutils-8.26-test-lock.patch
 Patch105: coreutils-8.26-selinuxenable.patch
 Patch101: coreutils-6.10-manpages.patch
+Patch102: coreutils-8.25-DIR_COLORS.patch
 Patch103: coreutils-8.2-uname-processortype.patch
 Patch104: coreutils-df-direct.patch
 Patch107: coreutils-8.4-mkdir-modenote.patch
@@ -68,6 +69,8 @@ the old GNU fileutils, sh-utils, and textutils packages.
 %prep
 %autosetup -N
 
+tee DIR_COLORS{,.256color,.lightbgcolor} <src/dircolors.hin >/dev/null
+
 %autopatch -p1
 
 (echo ">>> Fixing permissions on tests") 2>/dev/null
@@ -104,6 +107,7 @@ mkdir -p $RPM_BUILD_ROOT/{%{_bindir},%{_sbindir}}
 mv $RPM_BUILD_ROOT/{%_bindir,%_sbindir}/chroot
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/profile.d
+install -p -c -m644 DIR_COLORS{,.256color,.lightbgcolor} $RPM_BUILD_ROOT%{_sysconfdir}
 install -p -c -m644 %SOURCE105 $RPM_BUILD_ROOT%{_sysconfdir}/profile.d/colorls.sh
 install -p -c -m644 %SOURCE106 $RPM_BUILD_ROOT%{_sysconfdir}/profile.d/colorls.csh
 
@@ -126,6 +130,7 @@ fi
 %files -f supported_utils -f %{name}.lang
 %dir %{_libexecdir}/coreutils
 %{_libexecdir}/coreutils/*.so
+%config(noreplace) %{_sysconfdir}/DIR_COLORS*
 %config(noreplace) %{_sysconfdir}/profile.d/*
 %doc ABOUT-NLS NEWS README THANKS TODO
 %license COPYING
@@ -137,10 +142,13 @@ fi
 %{_mandir}/man*/*
 
 %changelog
-* Thu Dec 19 2019 shenyangyang <shenyangyang4@huawei.com> - 8.30-7
+* Wed Dec 25 2019 openEuler Buildteam <buildteam@openeuler.org> - 8.30-8
+- Revert last commit
+
+* Thu Dec 19 2019 openEuler Buildteam <buildteam@openeuler.org> - 8.30-7
 - delete unneeded patch
 
-* Wed Nov 6 2019 shenyangyang <shenyangyang4@huawei.com> - 8.30-6
+* Wed Nov 6 2019 openEuler Buildteam <buildteam@openeuler.org> - 8.30-6
 - delete unneeded comments
 
 * Thu Aug 29 2019 hexiaowen <hexiaowen@huawei.com> - 8.30-5
