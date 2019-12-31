@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    8.30
-Release:    8
+Release:    9
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -29,7 +29,6 @@ Patch804: coreutils-i18n-cut-old.patch
 Patch803: coreutils-i18n-fix-unexpand.patch
 Patch805: coreutils-i18n-fix2-expand-unexpand.patch
 Patch806: coreutils-i18n-un-expand-BOM.patch
-Patch807: coreutils-i18n-sort-human.patch
 Patch808: coreutils-i18n-fold-newline.patch
 Patch908: coreutils-getgrouplist.patch
 Patch950: coreutils-selinux.patch
@@ -142,6 +141,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Tue Dec 31 2019 openEuler Buildteam <buildteam@openeuler.org> - 8.30-9
+- Delete unneeded patch
+
 * Wed Dec 25 2019 openEuler Buildteam <buildteam@openeuler.org> - 8.30-8
 - Revert last commit
 
