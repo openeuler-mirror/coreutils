@@ -1,52 +1,34 @@
 Name:       coreutils
-Version:    8.30
-Release:    9
+Version:    8.31
+Release:    1
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
 Source0:    https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
-Source50:   supported_utils
-Source51:   coreutils-provides.inc
-Source105:  coreutils-colorls.sh
-Source106:  coreutils-colorls.csh
 
 # do not make coreutils-single depend on /usr/bin/coreutils
 %global __requires_exclude ^%{_bindir}/coreutils$
 
-Patch1:   coreutils-8.30-renameatu.patch
-Patch100: coreutils-8.26-test-lock.patch
-Patch105: coreutils-8.26-selinuxenable.patch
-Patch101: coreutils-6.10-manpages.patch
-Patch102: coreutils-8.25-DIR_COLORS.patch
-Patch103: coreutils-8.2-uname-processortype.patch
-Patch104: coreutils-df-direct.patch
-Patch107: coreutils-8.4-mkdir-modenote.patch
-Patch703: sh-utils-2.0.11-dateman.patch
-Patch713: coreutils-4.5.3-langinfo.patch
 Patch800: coreutils-i18n.patch
 Patch801: coreutils-i18n-expand-unexpand.patch
 Patch804: coreutils-i18n-cut-old.patch
 Patch803: coreutils-i18n-fix-unexpand.patch
 Patch805: coreutils-i18n-fix2-expand-unexpand.patch
 Patch806: coreutils-i18n-un-expand-BOM.patch
+Patch807: coreutils-i18n-sort-human.patch
 Patch808: coreutils-i18n-fold-newline.patch
-Patch908: coreutils-getgrouplist.patch
-Patch950: coreutils-selinux.patch
+Patch809: coreutils-getgrouplist.patch
 
 Patch6000: bugfix-remove-usr-local-lib-from-m4.patch
 Patch6001: bugfix-dummy_help2man.patch
 Patch6002: bugfix-selinux-flask.patch
-Patch6003: echo-always-process-escapes-when-POSIXLY_CORRECT-is-.patch
-Patch6004: sync-fix-open-fallback-bug.patch
-Patch6005: tail-fix-handling-of-broken-pipes-with-SIGPIPE-ignor.patch
-Patch6006: seq-output-decimal-points-consistently-with-invalid-.patch
 
 Conflicts: filesystem < 3
 # To avoid clobbering installs
 Provides: /bin/sh
 
 Conflicts: %{name}-single
-Obsoletes: %{name}-common
+Obsoletes: %{name}-common < %{version}-%{release}
 Provides: %{name}-common = %{version}-%{release}
 
 BuildRequires: attr, autoconf, automake, gcc, hostname, strace, texinfo
@@ -58,8 +40,19 @@ Requires(preun): /sbin/install-info
 Requires(post): /sbin/install-info
 
 Provides: coreutils-full = %{version}-%{release}
-%include %{SOURCE51}
+Provides: fileutils = %{version}-%{release}
+Provides: mktemp = 4:%{version}-%{release}
+Provides: sh-utils = %{version}-%{release}
+Provides: stat = %{version}-%{release}
+Provides: textutils = %{version}-%{release}
 Obsoletes: %{name} < 8.24
+Provides: bundled(gnulib)
+Provides: /bin/basename, /bin/cat, /bin/chgrp, /bin/chmod, /bin/chown
+Provides: /bin/cp, /bin/cut, /bin/date, /bin/dd, /bin/df, /bin/echo
+Provides: /bin/env, /bin/false, /bin/ln, /bin/ls, /bin/mkdir, /bin/mknod
+Provides: /bin/mktemp, /bin/mv, /bin/nice, /bin/pwd, /bin/readlink
+Provides: /bin/rm, /bin/rmdir, /bin/sleep, /bin/sort, /bin/stty
+Provides: /bin/sync, /bin/touch, /bin/true, /bin/uname
 
 %description
 These are the GNU core utilities.  This package is the combination of
@@ -95,20 +88,12 @@ make all %{?_smp_mflags}
 ln -v ../lib/parse-datetime.{c,y} .
  )
 
-# Get the list of supported utilities
-cp %SOURCE50 .
-
 %install
 (cd separate && make DESTDIR=$RPM_BUILD_ROOT install)
 
 # chroot was in /usr/sbin :
 mkdir -p $RPM_BUILD_ROOT/{%{_bindir},%{_sbindir}}
 mv $RPM_BUILD_ROOT/{%_bindir,%_sbindir}/chroot
-
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/profile.d
-install -p -c -m644 DIR_COLORS{,.256color,.lightbgcolor} $RPM_BUILD_ROOT%{_sysconfdir}
-install -p -c -m644 %SOURCE105 $RPM_BUILD_ROOT%{_sysconfdir}/profile.d/colorls.sh
-install -p -c -m644 %SOURCE106 $RPM_BUILD_ROOT%{_sysconfdir}/profile.d/colorls.csh
 
 %find_lang %name
 # Add the %%lang(xyz) ownership for the LC_TIME dirs as well...
@@ -126,11 +111,11 @@ if [ -f %{_infodir}/%{name}.info.gz ]; then
   /sbin/install-info %{_infodir}/%{name}.info.gz %{_infodir}/dir || :
 fi
 
-%files -f supported_utils -f %{name}.lang
+%files -f %{name}.lang
+%{_bindir}/*
+%{_sbindir}/chroot
 %dir %{_libexecdir}/coreutils
 %{_libexecdir}/coreutils/*.so
-%config(noreplace) %{_sysconfdir}/DIR_COLORS*
-%config(noreplace) %{_sysconfdir}/profile.d/*
 %doc ABOUT-NLS NEWS README THANKS TODO
 %license COPYING
 %exclude %{_infodir}/dir
@@ -141,8 +126,8 @@ fi
 %{_mandir}/man*/*
 
 %changelog
-* Tue Dec 31 2019 openEuler Buildteam <buildteam@openeuler.org> - 8.30-9
-- Delete unneeded patch
+* Thu Jan 9 2020 openEuler Buildteam <buildteam@openeuler.org> - 8.31-1
+- Update version to 8.31-1
 
 * Wed Dec 25 2019 openEuler Buildteam <buildteam@openeuler.org> - 8.30-8
 - Revert last commit
