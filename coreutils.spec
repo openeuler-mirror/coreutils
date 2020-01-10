@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    8.31
-Release:    1
+Release:    2
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -9,15 +9,8 @@ Source0:    https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 # do not make coreutils-single depend on /usr/bin/coreutils
 %global __requires_exclude ^%{_bindir}/coreutils$
 
-Patch800: coreutils-i18n.patch
-Patch801: coreutils-i18n-expand-unexpand.patch
-Patch804: coreutils-i18n-cut-old.patch
-Patch803: coreutils-i18n-fix-unexpand.patch
-Patch805: coreutils-i18n-fix2-expand-unexpand.patch
-Patch806: coreutils-i18n-un-expand-BOM.patch
-Patch807: coreutils-i18n-sort-human.patch
-Patch808: coreutils-i18n-fold-newline.patch
-Patch809: coreutils-getgrouplist.patch
+Patch1:    0001-coreutils-8.31-i18n.patch
+Patch2:    0001-disable-test-of-rwlock.patch
 
 Patch6000: bugfix-remove-usr-local-lib-from-m4.patch
 Patch6001: bugfix-dummy_help2man.patch
@@ -60,8 +53,6 @@ the old GNU fileutils, sh-utils, and textutils packages.
 
 %prep
 %autosetup -N
-
-tee DIR_COLORS{,.256color,.lightbgcolor} <src/dircolors.hin >/dev/null
 
 %autopatch -p1
 
@@ -126,6 +117,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Fri Jan 10 2020 openEuler Buildteam <buildteam@openeuler.org> - 8.31-2
+- Strengthen patch
+
 * Thu Jan 9 2020 openEuler Buildteam <buildteam@openeuler.org> - 8.31-1
 - Update version to 8.31-1
 
