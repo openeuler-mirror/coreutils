@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    8.31
-Release:    2
+Release:    3
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -8,13 +8,18 @@ Source0:    https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 
 # do not make coreutils-single depend on /usr/bin/coreutils
 %global __requires_exclude ^%{_bindir}/coreutils$
+%global user `ls -ld $USR_SCONF|awk '{print $3}'`
 
 Patch1:    0001-coreutils-8.31-i18n.patch
 Patch2:    0001-disable-test-of-rwlock.patch
+# uname -p/-i to display processor type
+Patch3:    coreutils-8.2-uname-processortype.patch
+# df --direct
+Patch4:    coreutils-df-direct.patch
 
-Patch6000: bugfix-remove-usr-local-lib-from-m4.patch
-Patch6001: bugfix-dummy_help2man.patch
-Patch6002: bugfix-selinux-flask.patch
+Patch5: bugfix-remove-usr-local-lib-from-m4.patch
+Patch6: bugfix-dummy_help2man.patch
+Patch7: bugfix-selinux-flask.patch
 
 Conflicts: filesystem < 3
 # To avoid clobbering installs
@@ -63,6 +68,9 @@ find tests -name '*.sh' -perm 0644 -print -exec chmod 0755 '{}' '+'
 autoreconf -fiv
 
 %build
+if [ %user = root ]; then
+    export FORCE_UNSAFE_CONFIGURE=1
+fi
 export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing -fpic"
 %{expand:%%global optflags %{optflags} -D_GNU_SOURCE=1}
 mkdir separate && \
@@ -89,6 +97,11 @@ mv $RPM_BUILD_ROOT/{%_bindir,%_sbindir}/chroot
 %find_lang %name
 # Add the %%lang(xyz) ownership for the LC_TIME dirs as well...
 grep LC_TIME %name.lang | cut -d'/' -f1-6 | sed -e 's/) /) %%dir /g' >>%name.lang
+
+%check
+pushd separate
+make check VERBOSE=yes
+popd
 
 %preun 
 if [ $1 = 0 ]; then
@@ -117,6 +130,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Thu Feb 13 2020 openEuler Buildteam <buildteam@openeuler.org> - 8.31-3
+- Enable check and uname -p/-i as well as df --direct
+
 * Fri Jan 10 2020 openEuler Buildteam <buildteam@openeuler.org> - 8.31-2
 - Strengthen patch
 
