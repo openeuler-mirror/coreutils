@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    8.31
-Release:    3
+Release:    4
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -30,7 +30,7 @@ Obsoletes: %{name}-common < %{version}-%{release}
 Provides: %{name}-common = %{version}-%{release}
 
 BuildRequires: attr, autoconf, automake, gcc, hostname, strace, texinfo
-BuildRequires: gettext-devel, gmp-devel, libacl-devel, libattr-devel
+BuildRequires: gettext-devel, gmp-devel, libacl-devel, libattr-devel gdb
 BuildRequires: libcap-devel, libselinux-devel, libselinux-utils, openssl-devel
 
 Requires: ncurses, gmp
@@ -130,6 +130,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Sat Mar 14 2020 openEuler Buildteam <buildteam@openeuler.org> - 8.31-4
+- Add build requires of gdb
+
 * Thu Feb 13 2020 openEuler Buildteam <buildteam@openeuler.org> - 8.31-3
 - Enable check and uname -p/-i as well as df --direct
 
