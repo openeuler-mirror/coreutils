@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    8.31
-Release:    4
+Release:    5
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -20,6 +20,7 @@ Patch4:    coreutils-df-direct.patch
 Patch5: bugfix-remove-usr-local-lib-from-m4.patch
 Patch6: bugfix-dummy_help2man.patch
 Patch7: bugfix-selinux-flask.patch
+Patch8: skip-the-tests-that-require-selinux-if-selinux-is-di.patch
 
 Conflicts: filesystem < 3
 # To avoid clobbering installs
@@ -130,6 +131,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Thu Apr 30 2020 openEuler Buildteam <buildteam@openeuler.org> - 8.31-5
+- Judge if selinux is enabled for the tests that requires selinux
+
 * Sat Mar 14 2020 openEuler Buildteam <buildteam@openeuler.org> - 8.31-4
 - Add build requires of gdb
 
