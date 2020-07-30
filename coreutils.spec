@@ -1,6 +1,6 @@
 Name:       coreutils
-Version:    8.31
-Release:    5
+Version:    8.32
+Release:    1
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -10,17 +10,21 @@ Source0:    https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 %global __requires_exclude ^%{_bindir}/coreutils$
 %global user `ls -ld $USR_SCONF|awk '{print $3}'`
 
-Patch1:    0001-coreutils-8.31-i18n.patch
-Patch2:    0001-disable-test-of-rwlock.patch
+Patch0:    0001-coreutils-8.31-i18n.patch
+Patch1:    0001-disable-test-of-rwlock.patch
 # uname -p/-i to display processor type
-Patch3:    coreutils-8.2-uname-processortype.patch
+Patch2:    coreutils-8.2-uname-processortype.patch
 # df --direct
-Patch4:    coreutils-df-direct.patch
+Patch3:    coreutils-df-direct.patch
 
-Patch5: bugfix-remove-usr-local-lib-from-m4.patch
-Patch6: bugfix-dummy_help2man.patch
-Patch7: bugfix-selinux-flask.patch
-Patch8: skip-the-tests-that-require-selinux-if-selinux-is-di.patch
+Patch4:    coreutils-getgrouplist.patch
+Patch5:    bugfix-remove-usr-local-lib-from-m4.patch
+Patch6:    bugfix-dummy_help2man.patch
+Patch7:    bugfix-selinux-flask.patch
+Patch8:    skip-the-tests-that-require-selinux-if-selinux-is-di.patch 
+
+Patch9:    coreutils-8.32-ls-removed-dir.patch
+Patch10:   coreutils-8.32-leaf-opt-xfs.patch
 
 Conflicts: filesystem < 3
 # To avoid clobbering installs
@@ -131,6 +135,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Wed Jul 29 2020 Liquor <lirui130@hauwei.com> - 8.32-1
+- update to 8.32
+
 * Thu Apr 30 2020 openEuler Buildteam <buildteam@openeuler.org> - 8.31-5
 - Judge if selinux is enabled for the tests that requires selinux
 
