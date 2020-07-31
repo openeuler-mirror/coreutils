@@ -1,8 +1,17 @@
+From 28499fa6b233ffe0db6f406b8210ab89c51ca9e8 Mon Sep 17 00:00:00 2001
+From: openEuler Buildteam <buildteam@openeuler.org>
+Date: Wed, 29 Jul 2020 11:59:54 +0800
+Subject: [PATCH] bugfix remove usr local lib from m4
+
+---
+ m4/getloadavg.m4 | 12 ------------
+ 1 file changed, 12 deletions(-)
+
 diff --git a/m4/getloadavg.m4 b/m4/getloadavg.m4
-index c9f5a6d..e8f94dd 100644
+index 8e96965..63782a2 100644
 --- a/m4/getloadavg.m4
 +++ b/m4/getloadavg.m4
-@@ -41,16 +41,6 @@ AC_CHECK_FUNC([getloadavg], [],
+@@ -41,18 +41,6 @@ AC_CHECK_FUNC([getloadavg], [],
         [LIBS="-lutil $LIBS" gl_func_getloadavg_done=yes])
     fi
  
@@ -10,7 +19,9 @@ index c9f5a6d..e8f94dd 100644
 -     # There is a commonly available library for RS/6000 AIX.
 -     # Since it is not a standard part of AIX, it might be installed locally.
 -     gl_getloadavg_LIBS=$LIBS
--     LIBS="-L/usr/local/lib $LIBS"
+-     if test $cross_compiling != yes; then
+-       LIBS="-L/usr/local/lib $LIBS"
+-     fi
 -     AC_CHECK_LIB([getloadavg], [getloadavg],
 -                  [LIBS="-lgetloadavg $LIBS" gl_func_getloadavg_done=yes],
 -                  [LIBS=$gl_getloadavg_LIBS])
@@ -19,3 +30,6 @@ index c9f5a6d..e8f94dd 100644
     # Set up the replacement function if necessary.
     if test $gl_func_getloadavg_done = no; then
       HAVE_GETLOADAVG=0
+-- 
+2.23.0
+

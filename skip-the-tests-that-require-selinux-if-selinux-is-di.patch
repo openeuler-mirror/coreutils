@@ -1,0 +1,30 @@
+From 797f2ff278fd7f0f0448b94350baa05f6752936b Mon Sep 17 00:00:00 2001
+From: openEuler Buildteam <buildteam@openeuler.org>
+Date: Thu, 30 Apr 2020 09:44:03 +0800
+Subject: [PATCH] skip the tests that require selinux if selinux is disabled
+
+no-context.sh context.sh install-C-selinux.sh
+These three tests requires selinux, and we need to judge if selinux
+is enabled, if not, just skip these tests.
+
+---
+ init.cfg | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/init.cfg b/init.cfg
+index 739ba33..d536dec 100644
+--- a/init.cfg
++++ b/init.cfg
+@@ -114,6 +114,9 @@ require_selinux_()
+   grep 'selinuxfs$' /proc/filesystems > /dev/null \
+     || skip_ "this system lacks SELinux support"
+ 
++  # Judge the selinux is enabled or not
++  selinuxenabled; [ $? = 1] && skip_ "SELinux is disabled"
++
+   # Independent of whether SELinux is enabled system-wide,
+   # the current file system may lack SELinux support.
+   # Also the current build may have SELinux support disabled.
+-- 
+1.8.3.1
+
