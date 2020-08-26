@@ -20,7 +20,7 @@ index 739ba33..d536dec 100644
      || skip_ "this system lacks SELinux support"
  
 +  # Judge the selinux is enabled or not
-+  selinuxenabled; [ $? = 1] && skip_ "SELinux is disabled"
++  selinuxenabled; [ $? = 1 ] && skip_ "SELinux is disabled"
 +
    # Independent of whether SELinux is enabled system-wide,
    # the current file system may lack SELinux support.
