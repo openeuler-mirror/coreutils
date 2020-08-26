@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    8.32
-Release:    1
+Release:    2
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
