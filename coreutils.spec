@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    8.32
-Release:    1
+Release:    2
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -135,6 +135,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Wed Aug 26 2020 chenbo pan <panchenbo@uniontech.com> - 8.32-2
+- fix patch error
+
 * Wed Jul 29 2020 Liquor <lirui130@hauwei.com> - 8.32-1
 - update to 8.32
 
