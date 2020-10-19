@@ -1,0 +1,92 @@
+diff --git a/gl/lib/randperm.c b/gl/lib/randperm.c
+index e9f46cd8c..400c7b33b 100644
+--- a/gl/lib/randperm.c
++++ b/gl/lib/randperm.c
+@@ -119,8 +119,8 @@ sparse_new (size_t size_hint)
+ static void
+ sparse_swap (sparse_map *sv, size_t* v, size_t i, size_t j)
+ {
+-  struct sparse_ent_ *v1 = hash_delete (sv, &(struct sparse_ent_) {i,0});
+-  struct sparse_ent_ *v2 = hash_delete (sv, &(struct sparse_ent_) {j,0});
++  struct sparse_ent_ *v1 = hash_remove (sv, &(struct sparse_ent_) {i,0});
++  struct sparse_ent_ *v2 = hash_remove (sv, &(struct sparse_ent_) {j,0});
+ 
+   /* FIXME: reduce the frequency of these mallocs.  */
+   if (!v1)
+diff --git a/gnulib b/gnulib
+index 0b93877fc..2d386f229 160000
+--- a/gnulib
++++ b/gnulib
+@@ -1 +1 @@
+-Subproject commit 0b93877fc4bdcd84b78805e5917e4ab94684b9bc
++Subproject commit 2d386f229aba9ecda85736b931e2964d7922d90e
+diff --git a/src/cp-hash.c b/src/cp-hash.c
+index 10ab2cd05..339071667 100644
+--- a/src/cp-hash.c
++++ b/src/cp-hash.c
+@@ -88,7 +88,7 @@ forget_created (ino_t ino, dev_t dev)
+   probe.st_dev = dev;
+   probe.name = NULL;
+ 
+-  ent = hash_delete (src_to_dest, &probe);
++  ent = hash_remove (src_to_dest, &probe);
+   if (ent)
+     src_to_dest_free (ent);
+ }
+diff --git a/src/ls.c b/src/ls.c
+index a69f9d6e4..1f6afbc0e 100644
+--- a/src/ls.c
++++ b/src/ls.c
+@@ -1766,7 +1766,7 @@ main (int argc, char **argv)
+                  Use its dev/ino numbers to remove the corresponding
+                  entry from the active_dir_set hash table.  */
+               struct dev_ino di = dev_ino_pop ();
+-              struct dev_ino *found = hash_delete (active_dir_set, &di);
++              struct dev_ino *found = hash_remove (active_dir_set, &di);
+               /* ASSERT_MATCHING_DEV_INO (thispend->realname, di); */
+               assert (found);
+               dev_ino_free (found);
+diff --git a/src/sort.c b/src/sort.c
+index 242bf66d1..0163ba18a 100644
+--- a/src/sort.c
++++ b/src/sort.c
+@@ -757,7 +757,7 @@ delete_proc (pid_t pid)
+   struct tempnode test;
+ 
+   test.pid = pid;
+-  struct tempnode *node = hash_delete (proctab, &test);
++  struct tempnode *node = hash_remove (proctab, &test);
+   if (! node)
+     return false;
+   node->state = REAPED;
+diff --git a/src/tail.c b/src/tail.c
+index 18e52b1bf..016690b6e 100644
+--- a/src/tail.c
++++ b/src/tail.c
+@@ -1771,7 +1771,7 @@ tail_forever_inotify (int wd, struct File_spec *f, size_t n_files,
+               if (0 <= fspec->wd)
+                 {
+                   inotify_rm_watch (wd, fspec->wd);
+-                  hash_delete (wd_to_name, fspec);
++                  hash_remove (wd_to_name, fspec);
+                 }
+ 
+               fspec->wd = new_wd;
+@@ -1782,7 +1782,7 @@ tail_forever_inotify (int wd, struct File_spec *f, size_t n_files,
+               /* If the file was moved then inotify will use the source file wd
+                 for the destination file.  Make sure the key is not present in
+                 the table.  */
+-              struct File_spec *prev = hash_delete (wd_to_name, fspec);
++              struct File_spec *prev = hash_remove (wd_to_name, fspec);
+               if (prev && prev != fspec)
+                 {
+                   if (follow_mode == Follow_name)
+@@ -1817,7 +1817,7 @@ tail_forever_inotify (int wd, struct File_spec *f, size_t n_files,
+           if (ev->mask & IN_DELETE_SELF)
+             {
+               inotify_rm_watch (wd, fspec->wd);
+-              hash_delete (wd_to_name, fspec);
++              hash_remove (wd_to_name, fspec);
+             }
+ 
+           /* Note we get IN_ATTRIB for unlink() as st_nlink decrements.
