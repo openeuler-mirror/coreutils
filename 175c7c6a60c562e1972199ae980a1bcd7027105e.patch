@@ -1,0 +1,12 @@
+diff --git a/.gitignore b/.gitignore
+index 318c02617..e1abcdfb7 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -79,6 +79,7 @@
+ /lib/netdb.h
+ /lib/netinet/in.h
+ /lib/parse-datetime.c
++/lib/parse-datetime-gen.h
+ /lib/printf.c
+ /lib/pthread.h
+ /lib/ref-add.sed
