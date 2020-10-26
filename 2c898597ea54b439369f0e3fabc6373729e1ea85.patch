@@ -1,0 +1,67 @@
+diff --git a/NEWS b/NEWS
+index 61b711611..7cf15498c 100644
+--- a/NEWS
++++ b/NEWS
+@@ -36,6 +36,8 @@ GNU coreutils NEWS                                    -*- outline -*-
+   ls --classify now supports the "always", "auto", or "never" flags,
+   to support only outputting classifier characters if connected to a tty.
+ 
++  nl --line-increment can now take a negative number to decrement the count.
++
+ ** Improvements
+ 
+   stat and tail now know about the "vboxsf" file system type.
+diff --git a/doc/coreutils.texi b/doc/coreutils.texi
+index a55514d59..8d9320ca2 100644
+--- a/doc/coreutils.texi
++++ b/doc/coreutils.texi
+@@ -1867,6 +1867,7 @@ Analogous to @option{--body-numbering}.
+ @opindex -i
+ @opindex --line-increment
+ Increment line numbers by @var{number} (default 1).
++@var{number} can be negative to decrement.
+ 
+ @item -l @var{number}
+ @itemx --join-blank-lines=@var{number}
+@@ -1916,6 +1917,7 @@ Separate the line number from the text line in the output with
+ @opindex -v
+ @opindex --starting-line-number
+ Set the initial line number on each logical page to @var{number} (default 1).
++The starting @var{number} can be negative.
+ 
+ @item -w @var{number}
+ @itemx --number-width=@var{number}
+diff --git a/src/nl.c b/src/nl.c
+index 154131f36..959909f05 100644
+--- a/src/nl.c
++++ b/src/nl.c
+@@ -521,7 +521,7 @@ main (int argc, char **argv)
+                                              0);
+           break;
+         case 'i':
+-          page_incr = xdectoimax (optarg, 1, INTMAX_MAX, "",
++          page_incr = xdectoimax (optarg, INTMAX_MIN, INTMAX_MAX, "",
+                                   _("invalid line number increment"), 0);
+           break;
+         case 'p':
+diff --git a/tests/misc/nl.sh b/tests/misc/nl.sh
+index c134a9896..fd9c5326c 100755
+--- a/tests/misc/nl.sh
++++ b/tests/misc/nl.sh
+@@ -67,4 +67,16 @@ EOF
+ compare exp out || fail=1
+ returns_ 1 nl -p -v$INTMAX_MAX in.txt > out || fail=1
+ 
++# Test negative iteration
++returns_ 1 nl -i$INTMAX_UFLOW /dev/null || fail=1
++printf '%s\n' a b > in.txt || framework_failure_
++nl -v$INTMAX_MAX -i$INTMAX_MIN in.txt > out || fail=1
++cat <<EOF > exp
++$INTMAX_MAX	a
++    -1	b
++EOF
++compare exp out || fail=1
++printf '%s\n' a b c > in.txt || framework_failure_
++returns_ 1 nl -v$INTMAX_MAX -i$INTMAX_MIN in.txt > out || fail=1
++
+ Exit $fail
