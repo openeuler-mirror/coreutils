@@ -1,0 +1,36 @@
+diff --git a/src/basenc.c b/src/basenc.c
+index 13c37f904..ee24a3f15 100644
+--- a/src/basenc.c
++++ b/src/basenc.c
+@@ -142,7 +142,6 @@ Base%d encode or decode FILE, or standard input, to standard output.\n\
+   -i, --ignore-garbage  when decoding, ignore non-alphabet characters\n\
+   -w, --wrap=COLS       wrap encoded lines after COLS character (default 76).\n\
+                           Use 0 to disable line wrapping\n\
+-\n\
+ "), stdout);
+ #if BASE_TYPE == 42
+       fputs (_("\
+diff --git a/src/realpath.c b/src/realpath.c
+index 6ed5f05c3..4391c697f 100644
+--- a/src/realpath.c
++++ b/src/realpath.c
+@@ -85,7 +85,6 @@ all but the last component must exist\n\
+       --relative-base=DIR      print absolute paths unless paths below DIR\n\
+   -s, --strip, --no-symlinks   don't expand symlinks\n\
+   -z, --zero                   end each output line with NUL, not newline\n\
+-\n\
+ "), stdout);
+       fputs (HELP_OPTION_DESCRIPTION, stdout);
+       fputs (VERSION_OPTION_DESCRIPTION, stdout);
+diff --git a/src/runcon.c b/src/runcon.c
+index b2f4d4a0b..05cbb4f87 100644
+--- a/src/runcon.c
++++ b/src/runcon.c
+@@ -93,7 +93,6 @@ With neither CONTEXT nor COMMAND, print the current security context.\n\
+   -u, --user=USER    user identity\n\
+   -r, --role=ROLE    role\n\
+   -l, --range=RANGE  levelrange\n\
+-\n\
+ "), stdout);
+       fputs (HELP_OPTION_DESCRIPTION, stdout);
+       fputs (VERSION_OPTION_DESCRIPTION, stdout);
