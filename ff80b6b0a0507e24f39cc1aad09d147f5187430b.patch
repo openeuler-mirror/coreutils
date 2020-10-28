@@ -1,0 +1,38 @@
+diff --git a/NEWS b/NEWS
+index 7cf15498c..efb97e6b0 100644
+--- a/NEWS
++++ b/NEWS
+@@ -40,8 +40,9 @@ GNU coreutils NEWS                                    -*- outline -*-
+ 
+ ** Improvements
+ 
+-  stat and tail now know about the "vboxsf" file system type.
+-  stat -f -c%T now reports the file system type, and tail -f uses polling.
++  stat and tail now know about the "devmem", "vboxsf", and "zonefs"
++  file system types.  stat -f -c%T now reports the file system type,
++  and tail -f uses polling for "vboxsf" and inotify for the others.
+ 
+ 
+ * Noteworthy changes in release 8.32 (2020-03-05) [stable]
+diff --git a/src/stat.c b/src/stat.c
+index 1c09073a2..70cc8d278 100644
+--- a/src/stat.c
++++ b/src/stat.c
+@@ -347,6 +347,8 @@ human_fstype (STRUCT_STATVFS const *statfsbuf)
+       return "debugfs";
+     case S_MAGIC_DEVFS: /* 0x1373 local */
+       return "devfs";
++    case S_MAGIC_DEVMEM: /* 0x454D444D local */
++      return "devmem";
+     case S_MAGIC_DEVPTS: /* 0x1CD1 local */
+       return "devpts";
+     case S_MAGIC_DMA_BUF: /* 0x444D4142 local */
+@@ -551,6 +553,8 @@ human_fstype (STRUCT_STATVFS const *statfsbuf)
+       return "z3fold";
+     case S_MAGIC_ZFS: /* 0x2FC12FC1 local */
+       return "zfs";
++    case S_MAGIC_ZONEFS: /* 0x5A4F4653 local */
++      return "zonefs";
+     case S_MAGIC_ZSMALLOC: /* 0x58295829 local */
+       return "zsmallocfs";
+ 
