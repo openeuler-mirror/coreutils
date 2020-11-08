@@ -1,0 +1,85 @@
+diff --git a/NEWS b/NEWS
+index efb97e6b0..392d0ce1e 100644
+--- a/NEWS
++++ b/NEWS
+@@ -44,6 +44,8 @@ GNU coreutils NEWS                                    -*- outline -*-
+   file system types.  stat -f -c%T now reports the file system type,
+   and tail -f uses polling for "vboxsf" and inotify for the others.
+ 
++  timeout now supports sub-second timeouts on macOS.
++
+ 
+ * Noteworthy changes in release 8.32 (2020-03-05) [stable]
+ 
+diff --git a/m4/jm-macros.m4 b/m4/jm-macros.m4
+index 08efde330..266235113 100644
+--- a/m4/jm-macros.m4
++++ b/m4/jm-macros.m4
+@@ -72,7 +72,7 @@ AC_DEFUN([coreutils_MACROS],
+   # Used by sort.c.
+   AC_CHECK_FUNCS_ONCE([nl_langinfo])
+   # Used by timeout.c
+-  AC_CHECK_FUNCS_ONCE([setrlimit prctl])
++  AC_CHECK_FUNCS_ONCE([setitimer setrlimit prctl])
+ 
+   # Used by tail.c.
+   AC_CHECK_FUNCS([inotify_init],
+diff --git a/src/timeout.c b/src/timeout.c
+index 2b5d930e9..ca6ab87eb 100644
+--- a/src/timeout.c
++++ b/src/timeout.c
+@@ -114,14 +114,9 @@ static void
+ settimeout (double duration, bool warn)
+ {
+ 
+-/* timer_settime() provides potentially nanosecond resolution.
+-   setitimer() is more portable (to Darwin for example),
+-   but only provides microsecond resolution and thus is
+-   a little more awkward to use with timespecs, as well as being
+-   deprecated by POSIX.  Instead we fallback to single second
+-   resolution provided by alarm().  */
+-
+ #if HAVE_TIMER_SETTIME
++  /* timer_settime() provides potentially nanosecond resolution.  */
++
+   struct timespec ts = dtotimespec (duration);
+   struct itimerspec its = { {0, 0}, ts };
+   timer_t timerid;
+@@ -138,8 +133,37 @@ settimeout (double duration, bool warn)
+     }
+   else if (warn && errno != ENOSYS)
+     error (0, errno, _("warning: timer_create"));
++
++#elif HAVE_SETITIMER
++  /* setitimer() is more portable (to Darwin for example),
++     but only provides microsecond resolution.  */
++
++  struct timeval tv;
++  struct timespec ts = dtotimespec (duration);
++  tv.tv_sec = ts.tv_sec;
++  tv.tv_usec = (ts.tv_nsec + 999) / 1000;
++  if (tv.tv_usec == 1000 * 1000)
++    {
++      if (tv.tv_sec != TYPE_MAXIMUM (time_t))
++        {
++          tv.tv_sec++;
++          tv.tv_usec = 0;
++        }
++      else
++        tv.tv_usec--;
++    }
++  struct itimerval it = { {0, 0}, tv };
++  if (setitimer (ITIMER_REAL, &it, NULL) == 0)
++    return;
++  else
++    {
++      if (warn && errno != ENOSYS)
++        error (0, errno, _("warning: setitimer"));
++    }
+ #endif
+ 
++  /* fallback to single second resolution provided by alarm().  */
++
+   unsigned int timeint;
+   if (UINT_MAX <= duration)
+     timeint = UINT_MAX;
