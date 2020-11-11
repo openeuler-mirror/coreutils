@@ -1,0 +1,72 @@
+diff --git a/NEWS b/NEWS
+index 392d0ce1e..657477ac7 100644
+--- a/NEWS
++++ b/NEWS
+@@ -17,6 +17,9 @@ GNU coreutils NEWS                                    -*- outline -*-
+   heavily changed during the run.
+   [bug introduced in coreutils-8.25]
+ 
++  ls no longer crashes when printing the SELinux context for unstatable files.
++  [bug introduced in coreutils-6.9.91]
++
+ ** Changes in behavior
+ 
+   cp and install now default to copy-on-write (COW) if available.
+diff --git a/src/ls.c b/src/ls.c
+index 1f6afbc0e..1b4834cec 100644
+--- a/src/ls.c
++++ b/src/ls.c
+@@ -3424,6 +3424,9 @@ gobble_file (char const *name, enum filetype type, ino_t inode,
+              provokes an exit status of 1.  */
+           file_failure (command_line_arg,
+                         _("cannot access %s"), full_name);
++
++          f->scontext = UNKNOWN_SECURITY_CONTEXT;
++
+           if (command_line_arg)
+             return 0;
+ 
+diff --git a/tests/local.mk b/tests/local.mk
+index 799200393..e1c4675c2 100644
+--- a/tests/local.mk
++++ b/tests/local.mk
+@@ -613,7 +613,7 @@ all_tests =					\
+   tests/ls/multihardlink.sh			\
+   tests/ls/no-arg.sh				\
+   tests/ls/no-cap.sh				\
+-  tests/ls/proc-selinux-segfault.sh		\
++  tests/ls/selinux-segfault.sh			\
+   tests/ls/quote-align.sh			\
+   tests/ls/readdir-mountpoint-inode.sh		\
+   tests/ls/recursive.sh				\
+diff --git a/tests/ls/proc-selinux-segfault.sh b/tests/ls/selinux-segfault.sh
+similarity index 77%
+rename from tests/ls/proc-selinux-segfault.sh
+rename to tests/ls/selinux-segfault.sh
+index 831a00e17..e2b7ef638 100755
+--- a/tests/ls/proc-selinux-segfault.sh
++++ b/tests/ls/selinux-segfault.sh
+@@ -1,5 +1,5 @@
+ #!/bin/sh
+-# ls -l /proc/sys would segfault when built against libselinux1 2.0.15-2+b1
++# Ensure we don't segfault in selinux handling
+ 
+ # Copyright (C) 2008-2020 Free Software Foundation, Inc.
+ 
+@@ -19,9 +19,15 @@
+ . "${srcdir=.}/tests/init.sh"; path_prepend_ ./src
+ print_ver_ ls
+ 
++# ls -l /proc/sys would segfault when built against libselinux1 2.0.15-2+b1
+ f=/proc/sys
+ test -r $f || f=.
+-
+ ls -l $f > out || fail=1
+ 
++# ls <= 8.32 would segfault when printing
++# the security context of broken symlink targets
++mkdir sedir || framework_failure_
++ln -sf missing sedir/broken || framework_failure_
++returns_ 1 ls -L -R -Z -m sedir > out || fail=1
++
+ Exit $fail
