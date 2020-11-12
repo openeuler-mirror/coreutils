@@ -1,0 +1,13 @@
+diff --git a/doc/coreutils.texi b/doc/coreutils.texi
+index 8d9320ca2..99f6d9fb8 100644
+--- a/doc/coreutils.texi
++++ b/doc/coreutils.texi
+@@ -13336,6 +13336,8 @@ True if the strings are equal.
+ @opindex ==
+ @cindex equal string check
+ True if the strings are equal (synonym for =).
++Note this form is not as portable to other
++shells and systems.
+ 
+ @item @var{string1} != @var{string2}
+ @opindex !=
