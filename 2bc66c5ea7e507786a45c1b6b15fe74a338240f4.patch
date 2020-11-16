@@ -1,0 +1,40 @@
+diff --git a/NEWS b/NEWS
+index 657477ac7..61b5d42f6 100644
+--- a/NEWS
++++ b/NEWS
+@@ -20,6 +20,10 @@ GNU coreutils NEWS                                    -*- outline -*-
+   ls no longer crashes when printing the SELinux context for unstatable files.
+   [bug introduced in coreutils-6.9.91]
+ 
++  tr no longer crashes when using --complement with certain
++  invalid combinations of case character classes.
++  [bug introduced in coreutils-8.6]
++
+ ** Changes in behavior
+ 
+   cp and install now default to copy-on-write (COW) if available.
+diff --git a/src/tr.c b/src/tr.c
+index 6f7650764..94794a28e 100644
+--- a/src/tr.c
++++ b/src/tr.c
+@@ -1176,7 +1176,7 @@ validate_case_classes (struct Spec_list *s1, struct Spec_list *s2)
+   bool s1_new_element = true;
+   bool s2_new_element = true;
+ 
+-  if (!s2->has_char_class)
++  if (complement || !s2->has_char_class)
+     return;
+ 
+   for (int i = 0; i < N_CHARS; i++)
+diff --git a/tests/misc/tr-case-class.sh b/tests/misc/tr-case-class.sh
+index 470197ee3..9f442c029 100755
+--- a/tests/misc/tr-case-class.sh
++++ b/tests/misc/tr-case-class.sh
+@@ -110,4 +110,7 @@ the latter string must not end with a character class' > exp
+   compare exp out || fail=1
+ fi
+ 
++# coreutils 8.6 - 8.32 inclusive, would abort trying to validate the following
++returns_ 1 tr -c '[:upper:]\000-\370' '[:lower:]' < /dev/null || fail=1
++
+ Exit $fail
