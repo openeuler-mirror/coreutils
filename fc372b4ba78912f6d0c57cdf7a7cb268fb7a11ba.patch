@@ -1,0 +1,7 @@
+diff --git a/gnulib b/gnulib
+index cd7fa0904..fdf046819 160000
+--- a/gnulib
++++ b/gnulib
+@@ -1 +1 @@
+-Subproject commit cd7fa0904bb6efb451ecc25907077fcfdf031824
++Subproject commit fdf0468198631a456406edc09983972edb8fa5c4
