@@ -1,0 +1,86 @@
+diff --git a/.gitignore b/.gitignore
+index e1abcdfb7..103fd4ba5 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -39,8 +39,8 @@
+ /coreutils-*.tar.gz.sig
+ /coreutils-*.tar.xz
+ /coreutils-*.tar.xz.sig
+-/doc/manual
+ /doc/coverage
++/doc/manual
+ /gnulib-tests
+ /lib/.dirstamp
+ /lib/.gitignore
+@@ -59,8 +59,8 @@
+ /lib/fcntl.h
+ /lib/float.h
+ /lib/fnmatch.h
+-/lib/getopt.h
+ /lib/getopt-cdefs.h
++/lib/getopt.h
+ /lib/glthread
+ /lib/iconv.h
+ /lib/iconv_open-aix.h
+@@ -78,14 +78,15 @@
+ /lib/math.h
+ /lib/netdb.h
+ /lib/netinet/in.h
+-/lib/parse-datetime.c
+ /lib/parse-datetime-gen.h
++/lib/parse-datetime.c
+ /lib/printf.c
+ /lib/pthread.h
+ /lib/ref-add.sed
+ /lib/ref-del.sed
+ /lib/sched.h
+ /lib/se-context.h
++/lib/se-label.h
+ /lib/se-selinux.h
+ /lib/selinux
+ /lib/signal.h
+@@ -173,12 +174,12 @@
+ /po/remove-potcdate.sin
+ /po/stamp-po
+ /src/coreutils.h
+-/src/coreutils_symlinks
+ /src/coreutils_shebangs
++/src/coreutils_symlinks
+ /src/cu-progs.mk
+-/src/fs-latest-magic.h
+ /src/fs-def
+ /src/fs-kernel-magic
++/src/fs-latest-magic.h
+ /src/fs-magic
+ /src/libsinglebin_*.a
+ /src/make-prime-list
+diff --git a/po/POTFILES.in b/po/POTFILES.in
+index 074322393..5ccc0e9a9 100644
+--- a/po/POTFILES.in
++++ b/po/POTFILES.in
+@@ -109,7 +109,6 @@ src/remove.c
+ src/rm.c
+ src/rmdir.c
+ src/runcon.c
+-src/selinux.c
+ src/seq.c
+ src/set-fields.c
+ src/shred.c
+diff --git a/src/mv.c b/src/mv.c
+index 21621af21..6855f5373 100644
+--- a/src/mv.c
++++ b/src/mv.c
+@@ -417,10 +417,9 @@ main (int argc, char **argv)
+           if (selinux_enabled)
+             {
+               x.preserve_security_context = false;
+-	      x.set_security_context = selabel_open (SELABEL_CTX_FILE,
+-						     NULL, 0);
+-	      if (! x.set_security_context)
+-		error (0, errno, _("warning: ignoring --context"));
++              x.set_security_context = selabel_open (SELABEL_CTX_FILE, NULL, 0);
++              if (! x.set_security_context)
++                error (0, errno, _("warning: ignoring --context"));
+             }
+           break;
+         case_GETOPT_HELP_CHAR;
