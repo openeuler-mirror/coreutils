@@ -1,0 +1,12 @@
+diff --git a/po/POTFILES.in b/po/POTFILES.in
+index 074322393..5ccc0e9a9 100644
+--- a/po/POTFILES.in
++++ b/po/POTFILES.in
+@@ -109,7 +109,6 @@ src/remove.c
+ src/rm.c
+ src/rmdir.c
+ src/runcon.c
+-src/selinux.c
+ src/seq.c
+ src/set-fields.c
+ src/shred.c
