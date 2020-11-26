@@ -1,0 +1,113 @@
+diff --git a/gnulib b/gnulib
+index fdf046819..cb432e7d6 160000
+--- a/gnulib
++++ b/gnulib
+@@ -1 +1 @@
+-Subproject commit fdf0468198631a456406edc09983972edb8fa5c4
++Subproject commit cb432e7d6144c99da594f1fbce8ec8fd939745a0
+diff --git a/src/chcon.c b/src/chcon.c
+index 724ec9b32..7487133cd 100644
+--- a/src/chcon.c
++++ b/src/chcon.c
+@@ -182,8 +182,8 @@ change_file_context (int fd, char const *file)
+   if (file_context == NULL || ! STREQ (context_string, file_context))
+     {
+       int fail = (affect_symlink_referent
+-                  ?  setfileconat (fd, file, se_const (context_string))
+-                  : lsetfileconat (fd, file, se_const (context_string)));
++                  ?  setfileconat (fd, file, context_string)
++                  : lsetfileconat (fd, file, context_string));
+ 
+       if (fail)
+         {
+@@ -559,7 +559,7 @@ main (int argc, char **argv)
+     {
+       specified_context = argv[optind++];
+       if (0 < is_selinux_enabled ()
+-          && security_check_context (se_const (specified_context)) < 0)
++          && security_check_context (specified_context) < 0)
+         die (EXIT_FAILURE, errno, _("invalid context: %s"),
+              quote (specified_context));
+     }
+diff --git a/src/cp.c b/src/cp.c
+index 3a451eb99..d25afd53b 100644
+--- a/src/cp.c
++++ b/src/cp.c
+@@ -1204,7 +1204,7 @@ main (int argc, char **argv)
+        if (scontext && !restorecon (NULL, dst_path, 0))
+           error (...);
+    */
+-  if (scontext && setfscreatecon (se_const (scontext)) < 0)
++  if (scontext && setfscreatecon (scontext) < 0)
+     die (EXIT_FAILURE, errno,
+          _("failed to set default file creation context to %s"),
+          quote (scontext));
+diff --git a/src/install.c b/src/install.c
+index dce29dbe1..58484d63e 100644
+--- a/src/install.c
++++ b/src/install.c
+@@ -921,7 +921,7 @@ main (int argc, char **argv)
+     die (EXIT_FAILURE, 0,
+          _("cannot set target context and preserve it"));
+ 
+-  if (scontext && setfscreatecon (se_const (scontext)) < 0)
++  if (scontext && setfscreatecon (scontext) < 0)
+     die (EXIT_FAILURE, errno,
+          _("failed to set default file creation context to %s"),
+          quote (scontext));
+diff --git a/src/mkdir.c b/src/mkdir.c
+index 988e53624..8f07d666e 100644
+--- a/src/mkdir.c
++++ b/src/mkdir.c
+@@ -269,7 +269,7 @@ main (int argc, char **argv)
+       if (is_smack_enabled ())
+         ret = smack_set_label_for_self (scontext);
+       else
+-        ret = setfscreatecon (se_const (scontext));
++        ret = setfscreatecon (scontext);
+ 
+       if (ret < 0)
+         die (EXIT_FAILURE, errno,
+diff --git a/src/mkfifo.c b/src/mkfifo.c
+index a28a9b84a..b9ad5a8e1 100644
+--- a/src/mkfifo.c
++++ b/src/mkfifo.c
+@@ -142,7 +142,7 @@ main (int argc, char **argv)
+       if (is_smack_enabled ())
+         ret = smack_set_label_for_self (scontext);
+       else
+-        ret = setfscreatecon (se_const (scontext));
++        ret = setfscreatecon (scontext);
+ 
+       if (ret < 0)
+         die (EXIT_FAILURE, errno,
+diff --git a/src/mknod.c b/src/mknod.c
+index 334a39769..d19f1ae1e 100644
+--- a/src/mknod.c
++++ b/src/mknod.c
+@@ -198,7 +198,7 @@ main (int argc, char **argv)
+       if (is_smack_enabled ())
+         ret = smack_set_label_for_self (scontext);
+       else
+-        ret = setfscreatecon (se_const (scontext));
++        ret = setfscreatecon (scontext);
+ 
+       if (ret < 0)
+         die (EXIT_FAILURE, errno,
+diff --git a/src/system.h b/src/system.h
+index ebf68349a..d058ec682 100644
+--- a/src/system.h
++++ b/src/system.h
+@@ -751,12 +751,6 @@ stzncpy (char *restrict dest, char const *restrict src, size_t len)
+ # define ARRAY_CARDINALITY(Array) (sizeof (Array) / sizeof *(Array))
+ #endif
+ 
+-/* Avoid const warnings by casting to more portable type.
+-   This is to cater for the incorrect const function declarations
+-   in selinux.h before libselinux-2.3 (May 2014).
+-   When version >= 2.3 is ubiquitous remove this function.  */
+-static inline char * se_const (char const * sctx) { return (char *) sctx; }
+-
+ /* Return true if ERR is ENOTSUP or EOPNOTSUPP, otherwise false.
+    This wrapper function avoids the redundant 'or'd comparison on
+    systems like Linux for which they have the same value.  It also
