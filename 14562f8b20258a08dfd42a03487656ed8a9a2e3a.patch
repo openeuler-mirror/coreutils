@@ -1,0 +1,108 @@
+diff --git a/src/chroot.c b/src/chroot.c
+index 02081e542..f8483f693 100644
+--- a/src/chroot.c
++++ b/src/chroot.c
+@@ -195,13 +195,13 @@ Run COMMAND with root directory set to NEWROOT.\n\
+ "), stdout);
+ 
+       fputs (_("\
+-  --groups=G_LIST        specify supplementary groups as g1,g2,..,gN\n\
++      --groups=G_LIST        specify supplementary groups as g1,g2,..,gN\n\
+ "), stdout);
+       fputs (_("\
+-  --userspec=USER:GROUP  specify user and group (ID or name) to use\n\
++      --userspec=USER:GROUP  specify user and group (ID or name) to use\n\
+ "), stdout);
+       printf (_("\
+-  --skip-chdir           do not change working directory to %s\n\
++      --skip-chdir           do not change working directory to %s\n\
+ "), quoteaf ("/"));
+ 
+       fputs (HELP_OPTION_DESCRIPTION, stdout);
+diff --git a/src/comm.c b/src/comm.c
+index 2bf8094bf..5c70f7710 100644
+--- a/src/comm.c
++++ b/src/comm.c
+@@ -128,24 +128,24 @@ and column three contains lines common to both files.\n\
+ "), stdout);
+       fputs (_("\
+ \n\
+-  -1              suppress column 1 (lines unique to FILE1)\n\
+-  -2              suppress column 2 (lines unique to FILE2)\n\
+-  -3              suppress column 3 (lines that appear in both files)\n\
++  -1                      suppress column 1 (lines unique to FILE1)\n\
++  -2                      suppress column 2 (lines unique to FILE2)\n\
++  -3                      suppress column 3 (lines that appear in both files)\n\
+ "), stdout);
+       fputs (_("\
+ \n\
+-  --check-order     check that the input is correctly sorted, even\n\
+-                      if all input lines are pairable\n\
+-  --nocheck-order   do not check that the input is correctly sorted\n\
++      --check-order       check that the input is correctly sorted, even\n\
++                            if all input lines are pairable\n\
++      --nocheck-order     do not check that the input is correctly sorted\n\
+ "), stdout);
+       fputs (_("\
+-  --output-delimiter=STR  separate columns with STR\n\
++      --output-delimiter=STR  separate columns with STR\n\
+ "), stdout);
+       fputs (_("\
+-  --total           output a summary\n\
++      --total             output a summary\n\
+ "), stdout);
+       fputs (_("\
+-  -z, --zero-terminated    line delimiter is NUL, not newline\n\
++  -z, --zero-terminated   line delimiter is NUL, not newline\n\
+ "), stdout);
+       fputs (HELP_OPTION_DESCRIPTION, stdout);
+       fputs (VERSION_OPTION_DESCRIPTION, stdout);
+diff --git a/src/join.c b/src/join.c
+index 1accfd48d..52966cfc2 100644
+--- a/src/join.c
++++ b/src/join.c
+@@ -204,28 +204,28 @@ When FILE1 or FILE2 (not both) is -, read standard input.\n\
+ "), stdout);
+       fputs (_("\
+ \n\
+-  -a FILENUM        also print unpairable lines from file FILENUM, where\n\
+-                      FILENUM is 1 or 2, corresponding to FILE1 or FILE2\n\
+-  -e EMPTY          replace missing input fields with EMPTY\n\
++  -a FILENUM             also print unpairable lines from file FILENUM, where\n\
++                           FILENUM is 1 or 2, corresponding to FILE1 or FILE2\n\
++  -e EMPTY               replace missing input fields with EMPTY\n\
+ "), stdout);
+       fputs (_("\
+-  -i, --ignore-case  ignore differences in case when comparing fields\n\
+-  -j FIELD          equivalent to '-1 FIELD -2 FIELD'\n\
+-  -o FORMAT         obey FORMAT while constructing output line\n\
+-  -t CHAR           use CHAR as input and output field separator\n\
++  -i, --ignore-case      ignore differences in case when comparing fields\n\
++  -j FIELD               equivalent to '-1 FIELD -2 FIELD'\n\
++  -o FORMAT              obey FORMAT while constructing output line\n\
++  -t CHAR                use CHAR as input and output field separator\n\
+ "), stdout);
+       fputs (_("\
+-  -v FILENUM        like -a FILENUM, but suppress joined output lines\n\
+-  -1 FIELD          join on this FIELD of file 1\n\
+-  -2 FIELD          join on this FIELD of file 2\n\
+-  --check-order     check that the input is correctly sorted, even\n\
+-                      if all input lines are pairable\n\
+-  --nocheck-order   do not check that the input is correctly sorted\n\
+-  --header          treat the first line in each file as field headers,\n\
+-                      print them without trying to pair them\n\
++  -v FILENUM             like -a FILENUM, but suppress joined output lines\n\
++  -1 FIELD               join on this FIELD of file 1\n\
++  -2 FIELD               join on this FIELD of file 2\n\
++      --check-order      check that the input is correctly sorted, even\n\
++                           if all input lines are pairable\n\
++      --nocheck-order    do not check that the input is correctly sorted\n\
++      --header           treat the first line in each file as field headers,\n\
++                           print them without trying to pair them\n\
+ "), stdout);
+       fputs (_("\
+-  -z, --zero-terminated     line delimiter is NUL, not newline\n\
++  -z, --zero-terminated  line delimiter is NUL, not newline\n\
+ "), stdout);
+       fputs (HELP_OPTION_DESCRIPTION, stdout);
+       fputs (VERSION_OPTION_DESCRIPTION, stdout);
