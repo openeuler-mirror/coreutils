@@ -1,0 +1,49 @@
+diff --git a/NEWS b/NEWS
+index d2cb9ae48..dfc7bfa41 100644
+--- a/NEWS
++++ b/NEWS
+@@ -20,6 +20,10 @@ GNU coreutils NEWS                                    -*- outline -*-
+   ls no longer crashes when printing the SELinux context for unstatable files.
+   [bug introduced in coreutils-6.9.91]
+ 
++  nl now handles single character --section-delimiter arguments,
++  by assuming a second ':' character has been specified, as specified by POSIX.
++  [This bug was present in "the beginning".]
++
+   rm no longer skips an extra file when the removal of an empty directory fails.
+   [bug introduced by the rewrite to use fts in coreutils-8.0]
+ 
+diff --git a/src/nl.c b/src/nl.c
+index 23219b609..d1f45b29c 100644
+--- a/src/nl.c
++++ b/src/nl.c
+@@ -556,7 +556,8 @@ main (int argc, char **argv)
+             }
+           break;
+         case 'd':
+-          if (strlen (optarg) == 2)  /* POSIX.  */
++          len = strlen (optarg);
++          if (len == 1 || len == 2)  /* POSIX.  */
+             {
+               char *p = section_del;
+               while (*optarg)
+diff --git a/tests/misc/nl.sh b/tests/misc/nl.sh
+index 0d57f3443..b64ab8e11 100755
+--- a/tests/misc/nl.sh
++++ b/tests/misc/nl.sh
+@@ -99,4 +99,15 @@ cat <<EOF > exp
+ EOF
+ compare exp out || fail=1
+ 
++# Ensure single char delimiters assume a following ':' character (as per POSIX)
++# coreutils <= v8.32 didn't match single char delimiters at all
++printf '%s\n' a x:x: c > in.txt || framework_failure_
++nl -d 'x' in.txt > out || fail=1
++cat <<EOF > exp
++     1	a
++
++     1	c
++EOF
++compare exp out || fail=1
++
+ Exit $fail
