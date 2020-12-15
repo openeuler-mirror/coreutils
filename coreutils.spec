@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    8.32
-Release:    2
+Release:    3
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -25,6 +25,9 @@ Patch8:    skip-the-tests-that-require-selinux-if-selinux-is-di.patch
 
 Patch9:    coreutils-8.32-ls-removed-dir.patch
 Patch10:   coreutils-8.32-leaf-opt-xfs.patch
+Patch6000: b0d527fb40bd7a36ab90af891a1934daff1f3475.patch
+Patch6001: 1935528ce9eba1df285dc05fbb8cf3c083334078.patch
+Patch6002: 567fc2c2ad7b70d9c053413bd1a918f93bc41670.patch
 
 Conflicts: filesystem < 3
 # To avoid clobbering installs
@@ -135,6 +138,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* 20201215225849748592 patch-tracking 8.32-3
+- append patch file of upstream repository from <b0d527fb40bd7a36ab90af891a1934daff1f3475> to <567fc2c2ad7b70d9c053413bd1a918f93bc41670>
+
 * Wed Aug 26 2020 chenbo pan <panchenbo@uniontech.com> - 8.32-2
 - fix patch error
 
