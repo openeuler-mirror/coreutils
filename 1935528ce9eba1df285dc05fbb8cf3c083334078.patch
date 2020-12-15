@@ -1,0 +1,71 @@
+diff --git a/doc/coreutils.texi b/doc/coreutils.texi
+index 5ac3745bd..df0655c20 100644
+--- a/doc/coreutils.texi
++++ b/doc/coreutils.texi
+@@ -1805,9 +1805,9 @@ start of body;
+ start of footer.
+ @end table
+ 
+-The two characters from which these strings are made can be changed from
+-@samp{\} and @samp{:} via options (see below), but the pattern and
+-length of each string cannot be changed.
++The characters from which these strings are made can be changed from
++@samp{\} and @samp{:} via options (see below), but the pattern
++of each string cannot be changed.
+ 
+ A section delimiter is replaced by an empty line on output.  Any text
+ that comes before the first section delimiter string in the input file
+@@ -1847,6 +1847,9 @@ expression @var{bre}.
+ @cindex section delimiters of pages
+ Set the section delimiter characters to @var{cd}; default is
+ @samp{\:}.  If only @var{c} is given, the second remains @samp{:}.
++As a GNU extension more than two characters can be specified,
++and also if @var{cd} is empty (@option{-d ''}), then section
++matching is disabled.
+ (Remember to protect @samp{\} or other metacharacters from shell
+ expansion with quotes or extra backslashes.)
+ 
+diff --git a/src/nl.c b/src/nl.c
+index a1b38a7e2..23219b609 100644
+--- a/src/nl.c
++++ b/src/nl.c
+@@ -211,7 +211,9 @@ Write each FILE to standard output, with line numbers added.\n\
+ Default options are: -bt -d'\\:' -fn -hn -i1 -l1 -n'rn' -s<TAB> -v1 -w6\n\
+ \n\
+ CC are two delimiter characters used to construct logical page delimiters;\n\
+-a missing second character implies ':'.\n\
++a missing second character implies ':'.  As a GNU extension one can specify\n\
++more than two characters, and also specifying the empty string (-d '')\n\
++disables section matching.\n\
+ "), stdout);
+       fputs (_("\
+ \n\
+diff --git a/tests/misc/nl.sh b/tests/misc/nl.sh
+index fd9c5326c..0d57f3443 100755
+--- a/tests/misc/nl.sh
++++ b/tests/misc/nl.sh
+@@ -79,4 +79,24 @@ compare exp out || fail=1
+ printf '%s\n' a b c > in.txt || framework_failure_
+ returns_ 1 nl -v$INTMAX_MAX -i$INTMAX_MIN in.txt > out || fail=1
+ 
++# Test GNU extension to --section-delimiter, of disabling section matching
++printf '%s\n' a '\:\:' c > in.txt || framework_failure_
++nl -d '' in.txt > out || fail=1
++cat <<\EOF > exp
++     1	a
++     2	\:\:
++     3	c
++EOF
++compare exp out || fail=1
++
++# Test GNU extension to --section-delimiter, of supporting strings longer than 2
++printf '%s\n' a foofoo c > in.txt || framework_failure_
++nl -d 'foo' in.txt > out || fail=1
++cat <<EOF > exp
++     1	a
++
++     1	c
++EOF
++compare exp out || fail=1
++
+ Exit $fail
