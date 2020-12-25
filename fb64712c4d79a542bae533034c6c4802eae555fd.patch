@@ -1,0 +1,22 @@
+diff --git a/gnulib b/gnulib
+index 8183682cc..d411aa6ff 160000
+--- a/gnulib
++++ b/gnulib
+@@ -1 +1 @@
+-Subproject commit 8183682cc4436bee18007d61bc79938eaf78619a
++Subproject commit d411aa6ffa127d2707958a364896a0fd7d500b1b
+diff --git a/src/make-prime-list.c b/src/make-prime-list.c
+index 4ae8676e0..035652e80 100644
+--- a/src/make-prime-list.c
++++ b/src/make-prime-list.c
+@@ -27,8 +27,9 @@ this program.  If not, see https://www.gnu.org/licenses/.  */
+ #include <stdlib.h>
+ #include <errno.h>
+ 
+-/* Deactivate config.h's "rpl_"-prefixed definitions of these symbols.  */
++/* Deactivate "rpl_"-prefixed definitions of these symbols.  */
+ #undef fclose
++#undef free
+ #undef malloc
+ #undef strerror
+ 
