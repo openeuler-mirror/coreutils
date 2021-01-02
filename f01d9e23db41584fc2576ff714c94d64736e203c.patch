@@ -1,0 +1,23 @@
+diff --git a/.x-update-copyright b/.x-update-copyright
+index 9b83e1cc3..45f4d9906 100644
+--- a/.x-update-copyright
++++ b/.x-update-copyright
+@@ -1,4 +1,5 @@
+ ^COPYING$
+ ^bootstrap$
++^doc/fdl\.texi$
+ ^man/help2man$
+ ^tests/init\.sh$
+diff --git a/doc/fdl.texi b/doc/fdl.texi
+index 82aa001de..542edaad2 100644
+--- a/doc/fdl.texi
++++ b/doc/fdl.texi
+@@ -5,7 +5,7 @@
+ @c hence no sectioning command or @node.
+ 
+ @display
+-Copyright @copyright{} 2000--2021 Free Software Foundation, Inc.
++Copyright @copyright{} 2000, 2001, 2002, 2007, 2008 Free Software Foundation, Inc.
+ @uref{https://fsf.org/}
+ 
+ Everyone is permitted to copy and distribute verbatim copies
