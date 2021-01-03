@@ -1,0 +1,20 @@
+diff --git a/man/cat.x b/man/cat.x
+index b84600fbd..9eb38cf05 100644
+--- a/man/cat.x
++++ b/man/cat.x
+@@ -3,4 +3,4 @@ cat \- concatenate files and print on the standard output
+ [DESCRIPTION]
+ .\" Add any additional description here
+ [SEE ALSO]
+-\fBtac\fP(1)
++tac(1)
+diff --git a/man/tac.x b/man/tac.x
+index 66bd338ec..677da2f82 100644
+--- a/man/tac.x
++++ b/man/tac.x
+@@ -3,4 +3,4 @@ tac \- concatenate and print files in reverse
+ [DESCRIPTION]
+ .\" Add any additional description here
+ [SEE ALSO]
+-\fBrev\fP(1)
++cat(1), rev(1)
