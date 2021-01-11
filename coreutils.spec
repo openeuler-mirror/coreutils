@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    8.32
-Release:    1
+Release:    2
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -25,6 +25,8 @@ Patch8:    skip-the-tests-that-require-selinux-if-selinux-is-di.patch
 
 Patch9:    coreutils-8.32-ls-removed-dir.patch
 Patch10:   coreutils-8.32-leaf-opt-xfs.patch
+Patch11:   backport-ls-fix-crash-printing-SELinux-context-for-unstatable.patch
+Patch12:   backport-tr-fix-crash-validating-c-with-some-case-char-classe.patch
 
 Conflicts: filesystem < 3
 # To avoid clobbering installs
@@ -135,6 +137,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Mon Jan 11 2021 wangchen <wangchen137@hauwei.com> - 8.32-2
+- backport some patches from upstream
+
 * Wed Jul 29 2020 Liquor <lirui130@hauwei.com> - 8.32-1
 - update to 8.32
 
