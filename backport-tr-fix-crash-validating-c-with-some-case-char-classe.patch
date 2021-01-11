@@ -1,0 +1,49 @@
+From 2bc66c5ea7e507786a45c1b6b15fe74a338240f4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?P=C3=A1draig=20Brady?= <P@draigBrady.com>
+Date: Sat, 14 Nov 2020 16:47:05 +0000
+Subject: [PATCH] tr: fix crash validating -c with some case char classes
+
+This crash was identified by Cyber Independent Testing Lab:
+https://cyber-itl.org/2020/10/28/citl-7000-defects.html
+and was introduced with commit v8.5-163-g3f48829c2
+
+* src/tr.c (validate_case_classes): Don't apply these
+extra case alignment checks in the --complement case,
+which is even more restrictive as to the contents of SET2.
+* tests/misc/tr-case-class.sh: Add a test case,
+for a large SET1, which caused the length adjustment
+in validate_case_classes to underflow and trigger the assert.
+* NEWS: Mention the bug fix.
+---
+ src/tr.c                    | 2 +-
+ tests/misc/tr-case-class.sh | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/tr.c b/src/tr.c
+index 6f76507..94794a2 100644
+--- a/src/tr.c
++++ b/src/tr.c
+@@ -1176,7 +1176,7 @@ validate_case_classes (struct Spec_list *s1, struct Spec_list *s2)
+   bool s1_new_element = true;
+   bool s2_new_element = true;
+ 
+-  if (!s2->has_char_class)
++  if (complement || !s2->has_char_class)
+     return;
+ 
+   for (int i = 0; i < N_CHARS; i++)
+diff --git a/tests/misc/tr-case-class.sh b/tests/misc/tr-case-class.sh
+index 470197e..9f442c0 100755
+--- a/tests/misc/tr-case-class.sh
++++ b/tests/misc/tr-case-class.sh
+@@ -110,4 +110,7 @@ the latter string must not end with a character class' > exp
+   compare exp out || fail=1
+ fi
+ 
++# coreutils 8.6 - 8.32 inclusive, would abort trying to validate the following
++returns_ 1 tr -c '[:upper:]\000-\370' '[:lower:]' < /dev/null || fail=1
++
+ Exit $fail
+-- 
+1.8.3.1
+
