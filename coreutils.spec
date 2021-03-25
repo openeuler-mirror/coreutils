@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    8.32
-Release:    3
+Release:    4
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -78,7 +78,7 @@ autoreconf -fiv
 if [ %user = root ]; then
     export FORCE_UNSAFE_CONFIGURE=1
 fi
-export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing -fpic"
+export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing -fpic -fsigned-char"
 %{expand:%%global optflags %{optflags} -D_GNU_SOURCE=1}
 mkdir separate && \
   (cd separate && ln -s ../configure || exit 1
@@ -137,6 +137,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Wed Mar 24 2021 zoulin <zoulin13@huawei.com> - 8.32-4
+- add -fsign-char for aarch64 for test-localeconv
+
 * Mon Jan 11 2021 wangchen <wangchen137@huawei.com> - 8.32-3
 - backport patches from upstream
 
