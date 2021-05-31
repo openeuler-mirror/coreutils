@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    8.32
-Release:    4
+Release:    5
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -79,6 +79,10 @@ if [ %user = root ]; then
     export FORCE_UNSAFE_CONFIGURE=1
 fi
 export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing -fpic -fsigned-char"
+
+# make mknod work again in chroot without /proc being mounted
+export ac_cv_func_lchmod="no"
+
 %{expand:%%global optflags %{optflags} -D_GNU_SOURCE=1}
 mkdir separate && \
   (cd separate && ln -s ../configure || exit 1
@@ -137,6 +141,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Mon May 31 2021 panxiaohe <panxiaohe@huawei.com> - 8.32-5
+- make mknod work again in chroot without /proc being mounted
+
 * Wed Mar 24 2021 zoulin <zoulin13@huawei.com> - 8.32-4
 - add -fsign-char for aarch64 for test-localeconv
 
