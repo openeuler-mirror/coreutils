@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    8.32
-Release:    5
+Release:    6
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -38,7 +38,7 @@ Provides: %{name}-common = %{version}-%{release}
 
 BuildRequires: attr, autoconf, automake, gcc, hostname, strace, texinfo
 BuildRequires: gettext-devel, gmp-devel, libacl-devel, libattr-devel gdb
-BuildRequires: libcap-devel, libselinux-devel, libselinux-utils, openssl-devel
+BuildRequires: libcap-devel, libselinux-devel, libselinux-utils, openssl-devel tcl
 
 Requires: ncurses, gmp
 Requires(preun): /sbin/install-info
@@ -141,6 +141,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Mon Jul 5 2021 yangzhuangzhuang <yangzhuangzhuang1@huawei.com> - 8.32-6
+- Add Buildrequires tcl to prevent "the /usr/bin/env: 'tclsh': No such file or direcory" error during compilation.
+
 * Mon May 31 2021 panxiaohe <panxiaohe@huawei.com> - 8.32-5
 - make mknod work again in chroot without /proc being mounted
 
