@@ -11,13 +11,14 @@ diff --git a/m4/gnulib-comp.m4 b/m4/gnulib-comp.m4
 index dead90e..0abf0bd 100644
 --- a/m4/gnulib-comp.m4
 +++ b/m4/gnulib-comp.m4
-@@ -1860,10 +1860,10 @@ AC_DEFUN([gl_INIT],
+@@ -1860,11 +1860,11 @@ AC_DEFUN([gl_INIT],
      AC_LIBOBJ([select])
    fi
    gl_SYS_SELECT_MODULE_INDICATOR([select])
 -  AC_CHECK_HEADERS([selinux/flask.h])
    gl_HEADERS_SELINUX_SELINUX_H
    gl_HEADERS_SELINUX_CONTEXT_H
+   gl_HEADERS_SELINUX_LABEL_H
    if test "$with_selinux" != no && test "$ac_cv_header_selinux_selinux_h" = yes; then
 +    AC_CHECK_HEADERS([selinux/flask.h])
      AC_LIBOBJ([getfilecon])
