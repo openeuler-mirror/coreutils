@@ -1,6 +1,6 @@
 Name:       coreutils
-Version:    8.32
-Release:    7
+Version:    9.0
+Release:    1
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -10,23 +10,14 @@ Source0:    https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 %global __requires_exclude ^%{_bindir}/coreutils$
 %global user `ls -ld $USR_SCONF|awk '{print $3}'`
 
-Patch0:    0001-coreutils-8.31-i18n.patch
-Patch1:    0001-disable-test-of-rwlock.patch
+Patch0:    0001-disable-test-of-rwlock.patch
 # uname -p/-i to display processor type
-Patch2:    coreutils-8.2-uname-processortype.patch
-# df --direct
-Patch3:    coreutils-df-direct.patch
-
-Patch4:    coreutils-getgrouplist.patch
-Patch5:    bugfix-remove-usr-local-lib-from-m4.patch
-Patch6:    bugfix-dummy_help2man.patch
-Patch7:    bugfix-selinux-flask.patch
-Patch8:    skip-the-tests-that-require-selinux-if-selinux-is-di.patch 
-
-Patch9:    coreutils-8.32-ls-removed-dir.patch
-Patch10:   coreutils-8.32-leaf-opt-xfs.patch
-Patch11:   backport-ls-fix-crash-printing-SELinux-context-for-unstatable.patch
-Patch12:   backport-tr-fix-crash-validating-c-with-some-case-char-classe.patch 
+Patch1:    coreutils-8.2-uname-processortype.patch
+Patch2:    coreutils-getgrouplist.patch
+Patch3:    bugfix-remove-usr-local-lib-from-m4.patch
+Patch4:    bugfix-dummy_help2man.patch
+Patch5:    bugfix-selinux-flask.patch
+Patch6:    skip-the-tests-that-require-selinux-if-selinux-is-di.patch 
 
 Conflicts: filesystem < 3
 # To avoid clobbering installs
@@ -141,6 +132,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Sat Nov 27 2021 wangchen <wangchen137@huawei.com> - 9.0-1
+- Update to 9.0
+
 * Tue Jul 20 2021 wangchen <wangchen137@huawei.com> - 8.32-7
 - Delete unnecessary gdb from BuildRequires
 
