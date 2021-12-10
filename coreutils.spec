@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    9.0
-Release:    1
+Release:    2
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -18,6 +18,7 @@ Patch3:    bugfix-remove-usr-local-lib-from-m4.patch
 Patch4:    bugfix-dummy_help2man.patch
 Patch5:    bugfix-selinux-flask.patch
 Patch6:    skip-the-tests-that-require-selinux-if-selinux-is-di.patch 
+Patch7:    backport-chmod-fix-exit-status-when-ignoring-symlinks.patch
 
 Conflicts: filesystem < 3
 # To avoid clobbering installs
@@ -132,6 +133,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Fri Dec 10 2021 wangchen <wangchen137@huawei.com> - 9.0-2
+- fix exit status when ignoring symlinks
+
 * Sat Nov 27 2021 wangchen <wangchen137@huawei.com> - 9.0-1
 - Update to 9.0
 
