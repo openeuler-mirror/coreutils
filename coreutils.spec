@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    9.0
-Release:    1
+Release:    2
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -20,6 +20,7 @@ Patch4:    bugfix-dummy_help2man.patch
 Patch5:    bugfix-selinux-flask.patch
 Patch6:    skip-the-tests-that-require-selinux-if-selinux-is-di.patch 
 Patch7:    backport-chmod-fix-exit-status-when-ignoring-symlinks.patch
+Patch8:    backport-timeout-ensure-foreground-k-exits-with-status-137.patch
 
 Conflicts: filesystem < 3
 # To avoid clobbering installs
@@ -134,6 +135,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Sat Feb 12 2022 yangzhuangzhuang <yangzhuangzhuang1@h-partners.com> - 9.0-2
+- timeout: ensure --foreground -k exits with status 137
+
 * Tue Jan 18 2022 wangchen <wangchen137@huawei.com> - 9.0-1
 - Update to 9.0
 
