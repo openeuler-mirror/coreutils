@@ -1,0 +1,48 @@
+From 0750fcdf3447366b074cb47dd8cbe88c83ed984d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?P=C3=A1draig=20Brady?= <P@draigBrady.com>
+Date: Tue, 12 Oct 2021 14:32:57 +0100
+Subject: [PATCH] timeout: ensure --foreground -k exits with status 137
+
+* src/timeout.c (main): Propagate the killed status from the child.
+* doc/coreutils.texi (timeout invocation): Remove the
+description of the --foreground specific handling of SIGKILL,
+now that it's consistent with the default mode of operation.
+* tests/misc/timeout.sh: Add a test case.
+* NEWS: Mention the change in behavior.
+Fixes https://bugs.gnu.org/51135
+---
+ src/timeout.c         | 5 +++++
+ tests/misc/timeout.sh | 3 +++
+ 2 files changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/src/timeout.c b/src/timeout.c
+index 34d7926408..6505634617 100644
+--- a/src/timeout.c
++++ b/src/timeout.c
+@@ -593,6 +593,11 @@ main (int argc, char **argv)
+                   unblock_signal (sig);
+                   raise (sig);
+                 }
++              /* Allow users to distinguish if command was forcably killed.
++                 Needed with --foreground where we don't send SIGKILL to
++                 the timeout process itself.  */
++              if (timed_out && sig == SIGKILL)
++                preserve_status = true;
+               status = sig + 128; /* what sh returns for signaled processes.  */
+             }
+           else
+diff --git a/tests/misc/timeout.sh b/tests/misc/timeout.sh
+index 44ca450d81..295a95773b 100755
+--- a/tests/misc/timeout.sh
++++ b/tests/misc/timeout.sh
+@@ -42,7 +42,10 @@ returns_ 124 timeout --preserve-status .1 sleep 10 && fail=1
+ # kill delay. Note once the initial timeout triggers,
+ # the exit status will be 124 even if the command
+ # exits on its own accord.
++# exit status should be 128+KILL
+ returns_ 124 timeout -s0 -k1 .1 sleep 10 && fail=1
++# Ensure a consistent exit status with --foreground
++returns_ 124 timeout --foreground -s0 -k1 .1 sleep 10 && fail=1
+ 
+ # Ensure 'timeout' is immune to parent's SIGCHLD handler
+ # Use a subshell and an exec to work around a bug in FreeBSD 5.0 /bin/sh.
