@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    8.32
-Release:    2
+Release:    3
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -27,6 +27,7 @@ Patch9:    coreutils-8.32-ls-removed-dir.patch
 Patch10:   coreutils-8.32-leaf-opt-xfs.patch
 Patch11:   backport-ls-fix-crash-printing-SELinux-context-for-unstatable.patch
 Patch12:   backport-tr-fix-crash-validating-c-with-some-case-char-classe.patch
+Patch13:   backport-timeout-ensure-foreground-k-exits-with-status-137.patch
 
 Conflicts: filesystem < 3
 # To avoid clobbering installs
@@ -137,6 +138,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Sat Feb 12 2022 yangzhuangzhuang <yangzhuangzhuang1@h-partners.com> - 8.32-3
+- timeout: ensure --foreground -k exits with status 137
+
 * Mon Jan 11 2021 wangchen <wangchen137@hauwei.com> - 8.32-2
 - backport some patches from upstream
 
