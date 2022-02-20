@@ -1,6 +1,6 @@
 Name:       coreutils
 Version:    9.0
-Release:    2
+Release:    3
 License:    GPLv3+
 Summary:    A set of basic GNU tools commonly used in shell scripts
 Url:        https://www.gnu.org/software/coreutils/
@@ -21,6 +21,8 @@ Patch5:    bugfix-selinux-flask.patch
 Patch6:    skip-the-tests-that-require-selinux-if-selinux-is-di.patch 
 Patch7:    backport-chmod-fix-exit-status-when-ignoring-symlinks.patch
 Patch8:    backport-timeout-ensure-foreground-k-exits-with-status-137.patch
+#patch from https://lists.nongnu.org/archive/html/bug-coreutils/2021-11/msg00014.html
+Patch9:    test-env-race.patch
 
 Conflicts: filesystem < 3
 # To avoid clobbering installs
@@ -135,6 +137,9 @@ fi
 %{_mandir}/man*/*
 
 %changelog
+* Thu Feb 17 2022 lvxiaoqian <xiaoqian@nj.iscas.ac.cn> - 9.0-3
+- bug fix:FAIL: tests/misc/env-signal-handler
+
 * Sat Feb 12 2022 yangzhuangzhuang <yangzhuangzhuang1@h-partners.com> - 9.0-2
 - timeout: ensure --foreground -k exits with status 137
 
